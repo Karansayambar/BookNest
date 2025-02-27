@@ -25,7 +25,7 @@ export const createListing = createAsyncThunk(
         },
       };
       const response = await axios.post(
-        "http://localhost:5000/api/listing/",
+        "https://book-nest-nkia.vercel.app/api/listing/",
         formData,
         config
       );
@@ -57,7 +57,7 @@ export const fetchListings = createAsyncThunk(
         },
       };
       const response = await axios.get(
-        `http://localhost:5000/api/listing/?${queryParams.toString()}`,
+        `https://book-nest-nkia.vercel.app/api/listing/?${queryParams.toString()}`,
         config
       );
       return response.data.listings;
@@ -79,7 +79,7 @@ export const fetchListing = createAsyncThunk(
         },
       };
       const response = await axios.get(
-        `http://localhost:5000/api/listing/${vendorId}`,
+        `https://book-nest-nkia.vercel.app/api/listing/${vendorId}`,
         config
       );
       return response.data.listing;
@@ -101,7 +101,7 @@ export const deleteListing = createAsyncThunk(
         },
       };
       await axios.delete(
-        `http://localhost:5000/api/listing/${listingId}`,
+        `https://book-nest-nkia.vercel.app/api/listing/${listingId}`,
         config
       );
       return listingId; // Return the deleted listing ID
@@ -129,7 +129,7 @@ export const updateListing = createAsyncThunk(
       }
 
       const response = await axios.put(
-        `http://localhost:5000/api/listing/${vendorId}`,
+        `https://book-nest-nkia.vercel.app/api/listing/${vendorId}`,
         formData,
         config
       );

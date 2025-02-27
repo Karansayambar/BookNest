@@ -7,7 +7,7 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "https://book-nest-nkia.vercel.app/api/auth/register",
         userData,
         {
           headers: { "Content-Type": "application/json" },
@@ -35,7 +35,7 @@ export const loginUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://book-nest-nkia.vercel.app/api/auth/login",
         userData
       );
       const { token, user } = response.data;
