@@ -8,9 +8,7 @@ import bookingRoutes from "./routes/bookingRoutes.js";
 import unitsRouters from "./routes/unitsRoutes.js";
 import bodyParser from "body-parser";
 import Stripe from "stripe";
-const stripe = new Stripe(
-  "sk_test_51QwlGiFvL7ejiYUx7Woorp1YfTo5DhIXZ6mrn4KtjmSyGlTj9SMaMPhm0DUooaPP9K1BIWisEZlzqme2qN7KczYd00BAjQeoRi"
-);
+const stripe = new Stripe(process.env.STRIPE_KEY);
 
 dotenv.config();
 const app = express();
@@ -19,7 +17,7 @@ const port = process.env.port || 3000;
 //middlewares
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://book-nest-71u9.vercel.app",
     extended: true,
     credentials: true, //Allow cookies (if needed)
     methods: "GET,POST,PUT,DELETE", //Allow required methods
@@ -64,9 +62,9 @@ app.post("/api/create-checkout-session", async (req, res) => {
       line_items: lineItems, // Correct key
       mode: "payment",
       success_url:
-        "http://localhost:3000/customer/dashboard/product-details/success",
+        "https://book-nest-71u9.vercel.app/customer/dashboard/product-details/success",
       cancel_url:
-        "http://localhost:3000/customer/dashboard/product-details/cancel",
+        "https://book-nest-71u9.vercel.app/dashboard/product-details/cancel",
     });
 
     return res.status(200).json({ id: session.id });
