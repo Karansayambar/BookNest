@@ -4,7 +4,6 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./layouts/Layout";
 import AuthLayout from "./layouts/AuthLayout";
 import { store, persistor } from "./store";
-import { PersistGate } from "redux-persist/integration/react";
 import CustomerDashboard from "./pages/customer/Dashboard";
 import VendorDashboard from "./pages/vendor/Dashboard"; // Vendor Layout
 import AdminDashboard from "./pages/admin/Dashboard";
@@ -19,6 +18,7 @@ import UpdateListing from "./pages/vendor/UpdateListing";
 import UnitForm from "./pages/vendor/UnitForm";
 import Success from "./pages/customer/Success";
 import Cancle from "./pages/customer/Cancle";
+import { PersistGate } from "redux-persist/integration/react";
 
 // Redirect based on authentication
 const AuthRedirect = () => {
