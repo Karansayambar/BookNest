@@ -73,7 +73,7 @@ const ProductDetails = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/create-checkout-session",
+        "https://book-nest-nkia.vercel.app/api/create-checkout-session",
         {
           method: "POST",
           headers: headers,

@@ -17,7 +17,7 @@ export const createUnit = createAsyncThunk(
       };
 
       const response = await axios.post(
-        "http://localhost:5000/api/units/",
+        "https://book-nest-nkia.vercel.app/api/units/",
         formData, // Fix: No need for JSON.stringify()
         config
       );
@@ -44,7 +44,7 @@ export const getUnitsByListing = createAsyncThunk(
       };
 
       const response = await axios.get(
-        `http://localhost:5000/api/units/${listingId}`,
+        `https://book-nest-nkia.vercel.app/api/units/${listingId}`,
         config
       );
 
@@ -77,6 +77,9 @@ const unitSlice = createSlice({
       })
       .addCase(createUnit.rejected, (state, action) => {
         state.loading = false;
+        state.listings = state.listings.map((listing) =>
+          listing._id === action.payload._id ? action.payload : listing
+        );
         state.error = action.payload;
       })
       .addCase(getUnitsByListing.pending, (state) => {
