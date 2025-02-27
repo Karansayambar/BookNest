@@ -18,10 +18,8 @@ const port = process.env.port || 3000;
 app.use(
   cors({
     origin: "https://book-nest-71u9.vercel.app",
-    extended: true,
-    credentials: true, //Allow cookies (if needed)
-    methods: "GET,POST,PUT,DELETE", //Allow required methods
-    allowedHeaders: "Content-Type,Authorization", //Allow required headers
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   })
 );
 app.use(express.json());
