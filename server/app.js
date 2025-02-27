@@ -62,7 +62,7 @@ app.post("/api/create-checkout-session", async (req, res) => {
       success_url:
         "https://book-nest-71u9.vercel.app/customer/dashboard/product-details/success",
       cancel_url:
-        "https://book-nest-71u9.vercel.app/dashboard/product-details/cancel",
+        "https://book-nest-71u9.vercel.app/customer/dashboard/product-details/cancel",
     });
 
     return res.status(200).json({ id: session.id });
