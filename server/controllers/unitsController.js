@@ -8,6 +8,7 @@ const createUnit = async (req, res) => {
       req.body;
 
     // Check if listing exists
+    console.log(req.body);
     const listing = await Listing.findById(listingId);
     if (!listing) {
       return res.status(404).json({ error: "Listing not found" });
@@ -21,6 +22,7 @@ const createUnit = async (req, res) => {
       totalUnits,
       availability,
     });
+    console.log("unit", unit);
 
     await unit.save();
 
@@ -36,6 +38,7 @@ const createUnit = async (req, res) => {
 const getUnitsByListing = async (req, res) => {
   try {
     const { listingId } = req.params;
+    console.log("i am working");
 
     const units = await Unit.find({ listingId });
 

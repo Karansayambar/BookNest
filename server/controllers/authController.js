@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 const register = async (req, res) => {
   const { name, email, password, role, contactDetails } = req.body;
-
+  console.log("api hit", req.body);
   try {
     //check if email is alredy register
     const existingUser = await User.findOne({ email });

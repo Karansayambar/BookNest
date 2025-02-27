@@ -9,15 +9,23 @@ import {
   updateListing,
 } from "../controllers/listingController.js";
 import { auth, authorize } from "../middleware/auth.js";
+import upload from "../config/multer.js";
 
-listingRouters.post("/", auth, authorize(["vendor"]), createListing);
+listingRouters.post(
+  "/",
+  auth,
+  authorize(["vendor"]),
+  upload.array("images", 5),
+  createListing
+);
 listingRouters.get("/", auth, getListings);
-listingRouters.get("/:id", getListing);
-listingRouters.put("/:id", auth, authorize(["vendor"]), updateListing);
+listingRouters.get("/:vendorId", auth, getListing);
+listingRouters.put("/:vendorId", auth, authorize(["vendor"]), updateListing);
 listingRouters.delete(
-  "/:id",
+  "/:vendorId",
   auth,
   authorize(["vendor", "admin"]),
+  upload.array("images", 5),
   deleteListing
 );
 listingRouters.patch(

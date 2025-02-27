@@ -1,14 +1,23 @@
+import cloudinary from "../config/cloudinary.js";
 import Listing from "../models/ListingSchemas.js";
 
 const createListing = async (req, res) => {
   try {
-    console.log("i am here");
+    const uploadedImages = await Promise.all(
+      req.files.map(async (file) => {
+        const result = await cloudinary.uploader.upload(file.path);
+        return result.secure_url;
+      })
+    );
+
     const listing = new Listing({
       ...req.body,
       vendorId: req.user._id,
+      images: uploadedImages,
     });
-    console.log("listing", listing);
+
     await listing.save();
+
     res.status(201).json({
       message: "Listing Created Successfully",
       listing,
@@ -20,6 +29,8 @@ const createListing = async (req, res) => {
   }
 };
 
+export default createListing;
+
 const getListings = async (req, res) => {
   try {
     const { type, city, priceMin, priceMax, status } = req.query;
@@ -28,6 +39,7 @@ const getListings = async (req, res) => {
     if (type) query.type = type;
     if (city) query["address.city"] = new RegExp(city, "i");
     if (priceMin || priceMax) {
+      vendorId;
       query["pricing.basePrice"] = {};
       if (priceMin) query["pricing.basePrice"].$gte = Number(priceMin);
       if (priceMax) query["pricing.basePrice"].$lte = Number(priceMax);
@@ -50,18 +62,19 @@ const getListings = async (req, res) => {
 
 const getListing = async (req, res) => {
   try {
-    console.log("Query Params:", req.query);
+    const { vendorId } = req.params;
 
-    const listing = await Listing.findById(req.params.id).populate(
+    if (!vendorId) {
+      return res.status(400).json({ error: "Vendor ID is required" });
+    }
+
+    const listing = await Listing.find({ vendorId }).populate(
       "vendorId",
       "name email"
     );
-    console.log("Vendor:", listing);
 
     if (!listing) {
-      return res.status(404).json({
-        error: "Listing Not Found",
-      });
+      return res.status(404).json({ error: "Listing Not Found" });
     }
 
     return res.status(200).json({
@@ -75,35 +88,53 @@ const getListing = async (req, res) => {
 
 const updateListing = async (req, res) => {
   try {
-    const { id } = req.params;
-    const updates = req.body;
-    // Check if the listing exists and belongs to the vendor
-    const listing = await Listing.findOne({ _id: id, vendorId: req.user._id });
-    if (!listing) {
-      return res.status(404).json({
-        error: "Listing not found or you are not authorized to update it.",
-      });
+    const { vendorId } = req.params;
+    console.log("Raw req.body:", req.body); // Debugging
+    console.log("Received files:", req.files); // Debugging
+
+    if (!vendorId) {
+      return res.status(400).json({ error: "Vendor ID is required" });
     }
 
-    // Update the listing
-    const updatedListing = await Listing.findByIdAndUpdate(id, updates, {
-      new: true,
-    });
+    let updates = { ...req.body };
 
+    // Ensure numeric values are correctly parsed
+    if (updates.basePrice) updates.basePrice = Number(updates.basePrice);
+
+    // If images were uploaded, get Cloudinary URLs
+    if (req.files && req.files.length > 0) {
+      updates.images = req.files.map((file) => file.path); // Cloudinary returns the file URL in `path`
+    }
+
+    const listing = await Listing.findOne({ vendorId });
+
+    if (!listing) {
+      return res.status(404).json({ error: "Listing not found" });
+    }
+
+    const updatedListing = await Listing.findByIdAndUpdate(
+      listing._id,
+      updates,
+      { new: true }
+    );
+
+    console.log("Updated Listing:", updatedListing);
     return res.status(200).json({
       message: "Listing updated successfully",
       listing: updatedListing,
     });
   } catch (error) {
+    console.error("Error updating listing:", error);
     return res.status(500).json({ error: error.message });
   }
 };
 
 const deleteListing = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { vendorId } = req.params;
+    console.log("id", req.params);
 
-    const listing = await Listing.findById(id);
+    const listing = await Listing.findById(vendorId);
     if (!listing) {
       return res.status(404).json({ error: "Listing not found." });
     }
@@ -116,10 +147,8 @@ const deleteListing = async (req, res) => {
         .status(403)
         .json({ error: "You are not authorized to delete this listing." });
     }
-
-    // Delete the listing
-    await Listing.findByIdAndDelete(id);
-
+    console.log("i am here");
+    await Listing.findByIdAndDelete(vendorId);
     return res.status(200).json({ message: "Listing deleted successfully" });
   } catch (error) {
     return res.status(500).json({ error: error.message });
