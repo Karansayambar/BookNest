@@ -4,9 +4,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./layouts/Layout";
 import AuthLayout from "./layouts/AuthLayout";
 import { store, persistor } from "./store";
-import { PersistGate } from "redux-persist/lib/integration/react";
-
-// Pages
+import { PersistGate } from "redux-persist/integration/react";
 import CustomerDashboard from "./pages/customer/Dashboard";
 import VendorDashboard from "./pages/vendor/Dashboard"; // Vendor Layout
 import AdminDashboard from "./pages/admin/Dashboard";
