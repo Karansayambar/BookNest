@@ -1,41 +1,37 @@
-// src/pages/LoginPage.js
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-// import { loginUser } from "../utils/api";
+import { useDispatch, useSelector } from "react-redux";
 import logoImage from "../../assets/hotelLogo.png";
+import { loginUser } from "../../store/slices/authSlice";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [checkMsg, setCheckMsg] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleSubmit = async (e) => {
+  const { loading, error, role } = useSelector((state) => state.auth);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
+    if (!email || !password) return;
 
-    if (!email || !password) {
-      setCheckMsg("Both fields are required.");
-      return;
-    }
-
-    const userData = { email, password };
-
-    try {
-      const response = await loginUser(userData);
-      localStorage.setItem("token", response.token); // Store the token
-      setCheckMsg("Login successful!");
-      setTimeout(() => {
-        navigate("/dashboard"); // Redirect to dashboard or home page
-      }, 2000);
-    } catch (error) {
-      setCheckMsg(error.message || "Login failed. Please try again.");
-    }
+    dispatch(loginUser({ email, password }))
+      .unwrap()
+      .then(({ role }) => {
+        if (role === "vendor") {
+          navigate("/vendor-dashboard");
+        } else {
+          navigate("/dashboard");
+        }
+      })
+      .catch(() => {});
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-[600px] items-center justify-center mt-10">
+    <div className="flex flex-col md:flex-row h-[600px] items-center justify-center">
       <img src={logoImage} alt="Sign in illustration" className="w-[500px]" />
-      <div className="w-[400px] h-[500px] p-10">
+      <div className="w-[500px] p-10 rounded-lg">
         <div className="w-full flex items-start flex-col">
           <p className="text-3xl pt-10">Sign in</p>
           <p className="py-5">
@@ -62,11 +58,12 @@ const LoginPage = () => {
             <button
               className="bg-[#141718] text-white p-2 rounded-md"
               type="submit"
+              disabled={loading}
             >
-              Sign In
+              {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
-          <p className="py-4">{checkMsg}</p>
+          {error && <p className="py-4 text-red-500">{error}</p>}
         </div>
       </div>
     </div>

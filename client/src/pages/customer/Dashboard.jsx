@@ -8,8 +8,10 @@ import restaurentImg from "../../assets/restaurentImg.jpg";
 import hotel1 from "../../assets/hotel1.jpg";
 import hotel2 from "../../assets/hotel2.jpg";
 import hotel3 from "../../assets/hotel3.jpg";
-import Product from "../../components/Products";
 import Selector from "../../components/Selector";
+import HotelCard from "../../components/HotelCard";
+import { hotels } from "../../utils/data";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   return (
@@ -45,17 +47,21 @@ const Dashboard = () => {
           <img src={hotel1} alt="" className="p-2 w-full h-[50%]" />
         </div>
       </section>
-      <section className="px-10 lg:px-40 my-10">
+      <section className="px-10 lg:px-20 my-10 h-full">
         <div className="flex items-end justify-between">
-          <p className="text-[20px] md:text-[30px] lg:text-[40px] w-20 md:w-40">
-            New Arrivals
+          <p className="text-[20px] md:text-[30px] lg:text-[40px] p-10">
+            Cities We Available
           </p>
-          <p className="border-b-2 border-black flex items-center gap-1">
-            More Products <FaArrowRight />
-          </p>
+          <Link to="/customer/dashboard/product-list">
+            <p className="border-b-2 border-black flex items-center gap-1">
+              More Products <FaArrowRight />
+            </p>
+          </Link>
         </div>
-        <div className="flex flex-nowrap gap-4 my-4 snap-x">
-          <Product />
+        <div className="flex py-10 flex-wrap gap-6 mb-40 justify-center">
+          {hotels.slice(0, 5).map((hotel, index) => (
+            <HotelCard key={index} hotel={hotel} />
+          ))}
         </div>
       </section>
       <section className="">{/* <Features /> */}</section>
